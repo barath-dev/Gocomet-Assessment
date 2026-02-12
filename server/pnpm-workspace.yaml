@@ -1,0 +1,6 @@
+onlyBuiltDependencies:
+  - '@newrelic/fn-inspect'
+  - '@newrelic/native-metrics'
+  - '@prisma/engines'
+  - prisma
+  - protobufjs

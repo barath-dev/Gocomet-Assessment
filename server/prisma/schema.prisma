@@ -1,0 +1,57 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js" 
+  // previewFeatures = ["accelerate"]
+  // output = "./generated"
+
+}
+
+datasource db {
+  provider = "postgresql"
+  // The `url` property is no longer supported in Prisma schema files as of Prisma 5. Move your database connection configuration to `prisma.config.ts` in your project root.
+  // See: https://pris.ly/d/config-datasource and https://pris.ly/d/prisma7-client-config
+}
+
+model User {
+  id           Int      @id @default(autoincrement())
+  username     String   @unique @db.VarChar(255) // [cite: 13]
+  joinDate     DateTime @default(now()) @map("join_date") // [cite: 16]
+
+  // Relations
+  sessions    GameSession[]
+  leaderboard Leaderboard?
+
+  @@map("users") // Maps to the exact table name 'users' requested in PDF [cite: 10]
+}
+
+model GameSession {
+  id        Int      @id @default(autoincrement())
+  userId    Int      @map("user_id")
+  score     Int
+  gameMode  String   @map("game_mode") @db.VarChar(50) // [cite: 29]
+  timestamp DateTime @default(now())
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade) // [cite: 27]
+
+  // INDEXING: Essential for fast history lookups by user
+  @@index([userId]) 
+  @@map("game_sessions") // Maps to table 'game_sessions' [cite: 19]
+}
+
+model Leaderboard {
+  id         Int @id @default(autoincrement())
+  userId     Int @unique @map("user_id") // Unique ensures one entry per user
+  totalScore Int @map("total_score")
+  rank       Int // [cite: 40]
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade) // [cite: 38]
+
+  // INDEXING: CRITICAL for the "Top 10" API [cite: 45]
+  // This allows the DB to retrieve top scores without sorting the entire table every time.
+  @@index([totalScore(sort: Desc)]) 
+  @@map("leaderboard") // Maps to table 'leaderboard' [cite: 31]
+}
