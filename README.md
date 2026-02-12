@@ -116,7 +116,7 @@ This script spawns 5 concurrent threads to submit scores and fetch leaderboards 
 Performance reports are available in the docs/ folder.
 * **Throughput:** Tested up to 600 RPM.
 * **Latency:** Average read latency < 5ms (Cache Hit).
-* **Monitoring:** [Link to New Relic Dashboard Snapshot or refer to docs]
+* **Monitoring:** https://onenr.io/0LREZkOq8ja
 
 ## 📂 Project Structure
 ```plaintext
